@@ -28,7 +28,7 @@ class Preprocessor:
             logger.warning(f"Filtering action is set to STUB, but the field `prefilter_blacklist_reasons` is empty in {self.filter_blacklist_file}!")
 
 
-    def trim_message(src_msg: str, soft_limit: int = FilteringParameters.length_limit_soft, \
+    def trim_message(self, src_msg: str, soft_limit: int = FilteringParameters.length_limit_soft, \
                     hard_limit: int = FilteringParameters.length_limit_hard) -> Tuple[str, bool]:
         """
         Trims message to a limit. Tries to break by sentence (punctuation) delimiters:
