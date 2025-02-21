@@ -60,7 +60,7 @@ class Preprocessor:
         @param text: input text
         @return: filtered text; True if message contains blacklisted words
         """
-        message = self.trim_message(text)
+        message, _is_trimmed = self.trim_message(text)
         if self.filtering_action == FilteringAction.FILTER:
             message = " ".join([word for word in text.split() if word.lower() not in self.blacklist])
         return message, self.check_blacklist(message)
