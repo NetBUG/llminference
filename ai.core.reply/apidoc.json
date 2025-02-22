@@ -1,0 +1,29 @@
+{
+  "name": "Sample LLM inference API documentation",
+  "version": "0.1.0",
+  "description": "Documentation for the HTTP API for sample LLM inference in Python",
+  "title": "LLMInference API Documentation via APIDoc",
+  "output": "doc",
+  "url" : "http://localhost:8000",
+  "input": [
+    "instance"
+  ],
+  "order": [
+    "Main",
+    "LLM"
+  ],
+  "header": {
+    "title": "Introduction",
+    "filename": "header.md"
+  },
+  "footer": {
+    "title": "Best practices",
+    "filename": "footer.md"
+  },
+  "template": {
+    "showRequiredLabels": false,
+    "withCompare": true,
+    "withGenerator": true,
+    "aloneDisplay": false
+  }
+}
