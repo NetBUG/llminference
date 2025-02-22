@@ -13,13 +13,12 @@ from fastapi import FastAPI, HTTPException
 import uvicorn
 
 from core.gen_pipeline import LLMPipeline
-from instance.parameters import FilteringAction, FilteringParameters
 
 # Parse command-line arguments
 ap = argparse.ArgumentParser()
 ap.add_argument('-p', '--port', help='Port to be listened', type=int, default=8000)
 ap.add_argument('-i', '--ip', help='IP of the interface to listen. Defaults to 0.0.0.0', default='0.0.0.0')
-ap.add_argument('-d', '--device', help='Device for model deployment', default=None')
+ap.add_argument('-d', '--device', help='Device for model deployment', default=None)
 
 args = ap.parse_args()
 
@@ -34,11 +33,13 @@ def index():
     return {'message': 'Hello, World!'}
 
 @app.post('/generate')
-def generate(text: str):
+def generate(payload: dict):
     try:
-        return model_wrapper.generate(text)
+        text = payload['text']
+        resp, is_filtered = model_wrapper.generate(text)
+        return { "query": text, "message": resp, "filtered": is_filtered }
     except ValueError as e:
-        logger.error(f"Error filtering text: {e}")
+        logger.error(f"Error obtaining text: {e}")
         raise HTTPException(status_code=400, detail="Sorry, I cannot process this message")
 
 def main():

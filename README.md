@@ -35,6 +35,13 @@ Two-step **build** with plain Docker was chosen, as no limitations have been set
 ## Deployment
 Run `run_inference.sh` to execute the chain, or build and run manually the image from `ai.core.reply` subfolder.
 
+## Usage
+The simplest client could be a cURL request executed from a command line:
+```sh
+   curl --location 'http://localhost:8000/generate' --header 'Content-Type: application/json' --data '{ "text": "How much is 2 + 3?" }'
+```
+The API is designed to be integrated as a service into a larger system, please check [API documentation](/apidoc) to do so.
+
 ## Running tests
 Run `run_tests.sh`
 

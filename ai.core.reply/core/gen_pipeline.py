@@ -11,23 +11,25 @@ import torch
 from typing import Tuple
 
 from core.core_transformers import ModelGenerator
-from instance.logger import logger
+from instance.logger import logger as base_logger
 from instance.parameters import FilteringAction, FilteringParameters, InferenceParameters
 from core.preprocessor import Preprocessor
 from core.postprocessor import Postprocessor
 
 class LLMPipeline:
     def __init__(self, device: str | None = None):
+        self.device = torch.device("cpu")
         if device is None:
             if torch.backends.mps.is_available():
-                mps_device = torch.device("mps")
-                self.device = mps_device
+                self.device = torch.device("mps")
             elif torch.cuda.is_available():
                 self.device = torch.device("cuda")
         else:
             self.device = torch.device(device)
 
-        logger.info(f'Loading model: {InferenceParameters.model_name} to device: {self.device}')
+        self.logger = base_logger.bind(corr_id='PIPELINE')
+
+        self.logger.info(f'Loading model: {InferenceParameters.model_name} to device: {self.device}')
         self.model = ModelGenerator(self.device)
         self.preprocessor = Preprocessor()
         self.postprocessor = Postprocessor(self.device)
@@ -43,5 +45,5 @@ class LLMPipeline:
                 return random.choice(self.postprocessor.stubs), True
             return response, False
         except ValueError as e:
-            logger.error(f"Filtering text raised exception: {e}")
+            self.logger.error(f"Filtering text raised exception: {e}")
             raise e
