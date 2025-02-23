@@ -72,7 +72,15 @@ Run `run_tests.sh`
 Please see [evaluation.md](evaluation.md) for further information
 
 ## Evaluation results
-<... add a nice table!>
+Just as a teaser for a page with evaluation results, a simplified table is affixed here.
+
+| GPU                             | RPM vLLM Avg | RPM trl | in tok/s<br>(VLLM) | out tok/s<br>(VLLM) | seconds/query (best) |
+| ------------------------------- | ------------ | ------- | ------------------ | ------------------- | -------------------- |
+| RTX A6000 @ 48Gb                | 146          | 44.1    | 102                | 39.1                | 0.41                 |
+| NVidia RTX3090 GPU @ 24Gb       | 168          | 50.8    | 107                | 45.4                | 0.36                 |
+| NVidia H100 GPU @ 80Gb @ py3.11 | 325          | 70.4    | 202                | 88.1                | 0.19                 |
+| Apple M2 CPU @ 16 Gb RAM        |              | 29.3    | N/A                | N/A                 | 2.1                  |
+| Intel Core2Duo T7500 CPU        |              | 0.012   | N/A                | N/A                 | 1094                 |
 
 ## Credits
 This project would never appear without M.P., D.T., I.V. and the whole inference team. I am just too lazy without external influence.

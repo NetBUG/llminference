@@ -51,7 +51,7 @@ For vLLM, intrinsic evaluation of input/output token cost was done. It shows tha
 Running vLLM on backends other than GPU seemed complicated and not worth the time, so some cells in the table are omitted.
 
 A spontaneous test was performed on H100 machine using three different builds with different Python versions.
-vLLM does not support 3.13, so only transformers-based generation was used; 3.10 ran into run-time issues so it was also excluded although it should technically work. 
+vLLM does not support 3.13, so only transformers-based generation was used; 3.10 ran into run-time issues so it was also excluded although it should technically have worked. 
 
 Python 3.11 showed slight although statistically insignificant increase in generation speed, which aligns with author's personal experience.
 
