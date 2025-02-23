@@ -38,3 +38,5 @@ def test_check_blacklist():
         Test that preprocessor.check_blacklist() works as expected
     """
     assert preprocessor.check_blacklist("Hello, World!") == False
+    assert preprocessor.check_blacklist("Hello, functional world!") == True
+    assert preprocessor.check_blacklist("Hello, FUNCTIONAL WORLD!") == True

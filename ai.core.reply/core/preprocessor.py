@@ -52,7 +52,7 @@ class Preprocessor:
         return msg, len(msg) != len(src_msg)
 
     def check_blacklist(self, text: str) -> bool:
-        return any([word in text for word in self.blacklist])
+        return any([word.lower() in text.lower() for word in self.blacklist])
 
     def filter_text(self, text: str) -> Tuple[str, bool]:
         """
