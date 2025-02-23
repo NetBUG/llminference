@@ -58,7 +58,7 @@ jobs:
         if: github.ref == 'refs/heads/master'
         with:
           context: .
-          directory: ai.core.reply
+          working-directory: ai.core.reply
           file: ./Dockerfile
           platforms: linux/amd64
           push: true
@@ -69,7 +69,7 @@ jobs:
         if: github.ref == !'refs/heads/master'
         with:
           context: .
-          directory: ai.core.reply
+          working-directory: ai.core.reply
           file: ./Dockerfile
           platforms: linux/amd64
           tags: ${{ steps.docker_meta.outputs.tags }}
