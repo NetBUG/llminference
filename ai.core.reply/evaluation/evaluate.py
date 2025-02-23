@@ -21,6 +21,7 @@ logger = base_logger.bind(corr_id='EVAL')
 
 ap = argparse.ArgumentParser()
 ap.add_argument('-m', '--mode', help='Mode: `trl` or `vllm`', default='trl')
+ap.add_argument('-i', '--iterations', help='Iterations (defaults to 100)', type=int, default=100)
 args = ap.parse_args()
 
 def get_tokenizer(model: gen_pipeline.LLMPipeline) -> callable:
@@ -59,7 +60,7 @@ if __name__ == '__main__':
         data = json.load(f)
         logger.info(f"Evaluating on {device} -- {torch.cuda.get_device_name()} - {args.mode.upper()} mode")
 
-        n_iterations = 100
+        n_iterations = args.iterations
 
         start = time.time()
         evaluate(model, data['short_questions'], n_iterations)
