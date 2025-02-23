@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Time    : 2025/02/17 15:00
+# @Time    : 2025/02/23 17:00
 # @Author  : Oleg Urzhumtsev aka @netbug
 # @Site    : https://github.com/NetBUG/llminference
 # @File    : instance/model_gen.py
@@ -52,15 +52,6 @@ class ModelGenerator():
         Generates a response to the context
         """
         context_str = InferenceParameters.system_prompt.format(user_query=query)
-
-        # generated_texts = self.infer(context_str, bad_words)
-
-        # bad_words = InferenceParameters.bad_words
-        # if bad_words and isinstance(bad_words, list) and len(bad_words) > 0:
-        #     self.BAD_WORDS_IDS = self.tokenizer(bad_words, add_special_tokens=False).input_ids
-
-        # if len(self.BAD_WORDS_IDS) > 0:
-        #     self.sampling_params.logits_processors = [self.process_token]
 
         generated_texts = []
     
