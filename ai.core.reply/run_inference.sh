@@ -9,5 +9,5 @@ if [ -z "$CUDA_VISIBLE_DEVICES" ]; then
     docker run -p 8000:80 --name ai_core llm_inferrer:latest
 else
     echo "CUDA_VISIBLE_DEVICES is set. Running on GPU."
-    docker run --gpus 1 --ipc host -p 8000:80 --name ai_core llm_inferrer:latest
+    docker run --gpus 0 --ipc host -p 8000:80 --name ai_core llm_inferrer:latest
 fi

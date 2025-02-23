@@ -10,8 +10,8 @@ import random
 import time
 from typing import Tuple
 
-# from core.core_transformers import ModelGenerator
-from core.core_vllm import ModelGenerator
+from core.core_transformers import ModelGenerator as TRLModelGenerator
+from core.core_vllm import ModelGenerator as VLLMModelGenerator
 from instance.logger import logger as base_logger
 from instance.parameters import FilteringAction, FilteringParameters, InferenceParameters
 from core.preprocessor import Preprocessor
@@ -19,12 +19,20 @@ from core.postprocessor import Postprocessor
 from core.utils.device_selector import select_device
 
 class LLMPipeline:
-    def __init__(self, device: str | None = None):
+    def __init__(self, device: str | None = None, model_type: str = 'trl'):
         self.device = select_device(device)
 
         self.logger = base_logger.bind(corr_id='PIPELINE')
 
         self.logger.info(f'Loading model: {InferenceParameters.model_name} to device: {self.device}')
+
+        if model_type == 'trl':     # Huggingface TRL
+            ModelGenerator = TRLModelGenerator
+        elif model_type == 'vllm':  # Very Large Language Model
+            ModelGenerator = VLLMModelGenerator
+        else:
+            raise ValueError(f"Unknown model type: {model_type}")
+
         self.model = ModelGenerator(self.device)
         self.preprocessor = Preprocessor()
         self.postprocessor = Postprocessor(self.device)

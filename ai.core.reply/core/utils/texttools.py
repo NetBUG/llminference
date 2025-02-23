@@ -3,8 +3,8 @@
 # @Time    : 2025/02/18 11:00
 # @Author  : Oleg Urzhumtsev aka @netbug
 # @Site    : https://github.com/NetBUG/llminference
-# @File    : core/gen_pipeline.py
-# This file contains the main pipeline for the model
+# @File    : utils/texttools.py
+# This file contains auxiliary files for text processing and cleanup
 
 
 import re
