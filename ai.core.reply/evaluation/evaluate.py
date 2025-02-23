@@ -72,4 +72,4 @@ if __name__ == '__main__':
 
         start = time.time()
         evaluate(model, data['long_questions'] + data['short_questions'], n_iterations)
-        logger.info(f'Long questions evaluated: {time.time() - start:.3f}s, average {n_iterations * 60 / (time.time() - start):.3f} RPM')
+        logger.info(f'Mixed dataset evaluated: {time.time() - start:.3f}s, average {n_iterations * 60 / (time.time() - start):.3f} RPM')
