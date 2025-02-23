@@ -30,12 +30,6 @@ class ModelGenerator:
                                                           low_cpu_mem_usage=True,
                                             ).to(self.device)
 
-        # self.generator = pipeline('text-generation', model=self.model, tokenizer=self.tokenizer)
-
-    def generate_pipeline(self, text: str):
-        prompt = InferenceParameters.system_prompt.format(user_query=text)
-        return self.generator(prompt, **InferenceParameters.model_params)
-
     def generate_text(self, text: str):
         prompt = InferenceParameters.system_prompt.format(user_query=text)
 
