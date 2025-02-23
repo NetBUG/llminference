@@ -48,10 +48,25 @@ As said above, it's hard to assess user load on the service, but if the number o
 
 For vLLM, intrinsic evaluation of input/output token cost was done. It shows that a single input token costs 3 times less than an output one, thus, if a custom model is trained, it's more favorable to favor long user's input and short and concise model outputs.
 
+Running vLLM on backends other than GPU seemed complicated and not worth the time, so some cells in the table are omitted.
+
+A spontaneous test was performed on H100 machine using three different builds with different Python versions.
+vLLM does not support 3.13, so only transformers-based generation was used; 3.10 ran into run-time issues so it was also excluded although it should technically work. 
+
+Python 3.11 showed slight although statistically insignificant increase in generation speed, which aligns with author's personal experience.
+
+NVidia drivers version 550.127.08 were used on all GPU-enabled machines.
+
 A table is shown below to reflect outcomes achieved:
 
- - NVidia RTX3090 GPU @ 24Gb
- - NVidia A6000 GPU @ 48Gb
- - NVidia H100 GPU @ 80Gb
- - Apple M2 CPU @ 16 Gb RAM
- - Intel Core2Duo CPU @ 16 Gb RAM
+| Platform                        | RPM vLLM Avg | RPM trl | in tok/s<br>(VLLM) | out tok/s<br>(VLLM) |
+| ------------------------------- | ------------ | ------- | ------------------ | ------------------- |
+| RTX A6000 @ 48Gb                | 146          | 44.1    | 102                | 39.1                |
+| NVidia RTX3090 GPU @ 24Gb       | 168          | 50.8    | 107                | 45.4                |
+| NVidia H100 GPU @ 80Gb @ py3.13 | N/A          | 69.5    | N/A                | N/A                 |
+| NVidia H100 GPU @ 80Gb @ py3.12 | 324          | 68.9    | 204                | 87.6                |
+| NVidia H100 GPU @ 80Gb @ py3.11 | 325          | 70.4    | 202                | 88.1                |
+| Apple M2 CPU @ 16 Gb RAM        | N/A          | 29.3    | N/A                | N/A                 |
+| AMD EPYC 9124 CPU               | N/A          | 0.1057  | N/A                | N/A                 |
+| i5-10700 CPU                    | N/A          | 0.043   | N/A                | N/A                 |
+| Intel Core2Duo T7500 CPU        | N/A          | 0.012   | N/A                | N/A                 |
