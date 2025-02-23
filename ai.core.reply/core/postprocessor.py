@@ -15,7 +15,8 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 from core.utils.blacklists import load_lists
 from instance.logger import logger as base_logger
-from instance.parameters import FilteringAction, FilteringParameters, EmptyResponseException
+from instance.parameters import FilteringAction, FilteringParameters
+from instance.typings import EmptyResponseException
 
 class Postprocessor():
     error_count = 0
