@@ -54,7 +54,7 @@ class ModelGenerator():
         context_str = InferenceParameters.system_prompt.format(user_query=query)
 
         generated_texts = []
-    
+
         with torch.inference_mode():
             start = time.time()
             outputs = self.model.generate(

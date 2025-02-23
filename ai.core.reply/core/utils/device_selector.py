@@ -23,5 +23,5 @@ def select_device(device: str | None = None) -> torch.device:
             return torch.device(device)
         except Exception as e:
             logger.warning(f"Error selecting device: {e}")
-    
+
     return torch.device("cpu")

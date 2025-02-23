@@ -28,7 +28,7 @@ class ModelGenerator:
                                                           torch_dtype=torch.float16,
                                                           low_cpu_mem_usage=True,
                                             ).to(self.device)
-        
+
         # [[self.tokenizer.eos_token_id]]
         self.bad_words_ids = self.tokenizer(InferenceParameters.bad_words).input_ids
         self.tokenizer.pad_token = self.tokenizer.eos_token       
