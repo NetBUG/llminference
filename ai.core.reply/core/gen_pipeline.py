@@ -10,10 +10,11 @@ import random
 import time
 from typing import Tuple
 
-from core.core_transformers import ModelGenerator as TRLModelGenerator
-from core.core_vllm import ModelGenerator as VLLMModelGenerator
 from instance.logger import logger as base_logger
 from instance.parameters import FilteringAction, FilteringParameters, InferenceParameters
+from instance.typings import RequestContext
+from core.core_transformers import ModelGenerator as TRLModelGenerator
+from core.core_vllm import ModelGenerator as VLLMModelGenerator
 from core.preprocessor import Preprocessor
 from core.postprocessor import Postprocessor
 from core.utils.device_selector import select_device
@@ -40,24 +41,25 @@ class LLMPipeline:
     def is_ready(self) -> bool:
         return self.model and self.postprocessor.is_ready()
 
-    def generate(self, text: str) -> Tuple[str, bool]:
+    def generate(self, context: RequestContext):
         try:
             preproc_ts = time.time()
-            text, pre_filtered = self.preprocessor.filter_text(text)
-            self.logger.debug(f"Preprocessing: {time.time() - preproc_ts:.3f} seconds")
+            text, pre_filtered = self.preprocessor.filter_text(context.query)
+            context.logger.debug(f"Preprocessing: {time.time() - preproc_ts:.3f} seconds")
             if FilteringParameters.preprocessor_action == FilteringAction.STUB and pre_filtered:
-                return random.choice(self.preprocessor.stubs), True
+                context.filtered = True
+                context.response = random.choice(self.preprocessor.stubs)
+                return
 
             gen_ts = time.time()
             raw_responses = self.model.generate_text(text)
-            self.logger.debug(f"Generation: {time.time() - gen_ts:.3f} seconds")
+            context.logger.debug(f"Generation: {time.time() - gen_ts:.3f} seconds")
 
             postproc_ts = time.time()
-            response, post_filtered = self.postprocessor.filter_context([text], raw_responses)
-            self.logger.debug(f"Postprocessing: {time.time() - postproc_ts:.3f} seconds")
-            if FilteringParameters.postprocessor_action == FilteringAction.STUB and post_filtered:
-                return random.choice(self.postprocessor.stubs), True
-            return response, False
+            context.response, context.filtered = self.postprocessor.filter_context([text], raw_responses)
+            context.logger.debug(f"Postprocessing: {time.time() - postproc_ts:.3f} seconds")
+            if FilteringParameters.postprocessor_action == FilteringAction.STUB and context.filtered:
+                context.response = random.choice(self.preprocessor.stubs)
         except ValueError as e:
-            self.logger.error(f"Filtering text raised exception: {e}")
+            context.logger.error(f"Filtering text raised exception: {e}")
             raise e

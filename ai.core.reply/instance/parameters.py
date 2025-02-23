@@ -1,22 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Time    : 2025/02/17 20:00
+# @Time    : 2025/02/20 19:00
 # @Author  : Oleg Urzhumtsev aka @netbug
 # @Site    : https://github.com/NetBUG/llminference
-# @File    : instance/app.py
+# @File    : instance/parameters.py
 # File with parameters used for inference
+ 
+from instance.typings import FilteringAction, EmptyResponseException
 
-class FilteringAction:
-    REJECT = 'reject'       # Return status telling the generation was declined
-    FILTER = 'filter'       # Filter out blacklisted words
-    STUB = 'stub'           # Use one of predefined stubs instead of generation
-    NONE = 'none'           # Do nothing
-
-class EmptyResponseException(Exception):
-    def __init__(self, name: str):
-        self.name = name
-
-MAX_NEW_TOKENS = 50         # 
+MAX_NEW_TOKENS = 50
 
 # Version for 24+ Gb GPU RAM (fits into 16 Gb with small context)
 class InferenceParameters:
