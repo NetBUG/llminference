@@ -6,11 +6,7 @@
 # @File    : tests/test_preprocessor.py
 # This file contains test for core/preprocessor.py
 
-import pytest
-import sys
-
 from core.preprocessor import Preprocessor
-from instance.parameters import FilteringParameters
 
 preprocessor = Preprocessor()
 
