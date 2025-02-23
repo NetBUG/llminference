@@ -15,7 +15,7 @@ The solution should have:
  - [x] tests
  - [x] the README how to deploy and evaluate the system
  - [x] a benchmark tool to evaluate service performance with different numbers of users and request lengths (any additional measurements are welcome)
- - [ ] performance analysis under various loads and findings about optimal configurations
+ - [x] performance analysis under various loads and findings about optimal configurations
 
 ## Design considerations
 **Model** chosen is [`allenai/Llama-3.1-Tulu-3.1-8B`](https://huggingface.co/allenai/Llama-3.1-Tulu-3.1-8B). It was chosen as a model with instruction training able to perform tasks in user query. 
