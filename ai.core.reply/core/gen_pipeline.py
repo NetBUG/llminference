@@ -7,7 +7,7 @@
 # This file contains the main pipeline for the model
 
 import random
-import torch
+import time
 from typing import Tuple
 
 from core.core_transformers import ModelGenerator
@@ -33,11 +33,19 @@ class LLMPipeline:
 
     def generate(self, text: str) -> Tuple[str, bool]:
         try:
+            preproc_ts = time.time()
             text, pre_filtered = self.preprocessor.filter_text(text)
+            self.logger.debug(f"Preprocessing: {time.time() - preproc_ts:.3f} seconds")
             if FilteringParameters.preprocessor_action == FilteringAction.STUB and pre_filtered:
                 return random.choice(self.preprocessor.stubs), True
+
+            gen_ts = time.time()
             raw_responses = self.model.generate_text(text)
+            self.logger.debug(f"Generation: {time.time() - gen_ts:.3f} seconds")
+
+            postproc_ts = time.time()
             response, post_filtered = self.postprocessor.filter_context([text], raw_responses)
+            self.logger.debug(f"Postprocessing: {time.time() - postproc_ts:.3f} seconds")
             if FilteringParameters.postprocessor_action == FilteringAction.STUB and post_filtered:
                 return random.choice(self.postprocessor.stubs), True
             return response, False

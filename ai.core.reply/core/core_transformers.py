@@ -37,21 +37,21 @@ class ModelGenerator:
         prompt = InferenceParameters.system_prompt.format(user_query=text)
 
         self.logger.debug(f"Generating response for: {prompt}")
+        start = time.time()
         encoded_context = self.tokenizer.encode(prompt,
                                                 return_tensors='pt',
                                                 padding=True).to(self.device)
+        self.logger.debug("Tokenization: %.3f seconds" % (time.time() - start))
         encoded_context_len = len(encoded_context[0])
 
         responses_ids = None
         with torch.inference_mode():
-            start = time.time()
             responses_ids = self.model.generate(
                 encoded_context,
                 pad_token_id=self.tokenizer.eos_token_id,
                 **InferenceParameters.model_params,
                 bad_words_ids=self.bad_words_ids,
             )
-            self.logger.debug("Generation: %.3f seconds" % (time.time() - start))
 
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
