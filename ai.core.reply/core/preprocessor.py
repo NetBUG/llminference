@@ -48,11 +48,11 @@ class Preprocessor:
         else:
             last_delims = [msg.rfind(c) for c in delim]
             if max(last_delims) > soft_limit:
-                msg = msg[:max(last_delims) + 1]
+                msg = msg[:max(last_delims) + 1].strip()
         return msg, len(msg) != len(src_msg)
 
     def check_blacklist(self, text: str) -> bool:
-        return any([word in text for word in self.blacklist])
+        return any([word.lower() in text.lower() for word in self.blacklist])
 
     def filter_text(self, text: str) -> Tuple[str, bool]:
         """
@@ -64,4 +64,3 @@ class Preprocessor:
         if self.filtering_action == FilteringAction.FILTER:
             message = " ".join([word for word in text.split() if word.lower() not in self.blacklist])
         return message, self.check_blacklist(message)
-    

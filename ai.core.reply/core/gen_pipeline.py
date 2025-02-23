@@ -7,7 +7,7 @@
 # This file contains the main pipeline for the model
 
 import random
-import torch
+import time
 from typing import Tuple
 
 from core.core_transformers import ModelGenerator
@@ -15,17 +15,11 @@ from instance.logger import logger as base_logger
 from instance.parameters import FilteringAction, FilteringParameters, InferenceParameters
 from core.preprocessor import Preprocessor
 from core.postprocessor import Postprocessor
+from core.utils.device_selector import select_device
 
 class LLMPipeline:
     def __init__(self, device: str | None = None):
-        self.device = torch.device("cpu")
-        if device is None:
-            if torch.backends.mps.is_available():
-                self.device = torch.device("mps")
-            elif torch.cuda.is_available():
-                self.device = torch.device("cuda")
-        else:
-            self.device = torch.device(device)
+        self.device = select_device(device)
 
         self.logger = base_logger.bind(corr_id='PIPELINE')
 
@@ -34,13 +28,24 @@ class LLMPipeline:
         self.preprocessor = Preprocessor()
         self.postprocessor = Postprocessor(self.device)
 
+    def is_ready(self) -> bool:
+        return self.model and self.postprocessor.is_ready()
+
     def generate(self, text: str) -> Tuple[str, bool]:
         try:
+            preproc_ts = time.time()
             text, pre_filtered = self.preprocessor.filter_text(text)
+            self.logger.debug(f"Preprocessing: {time.time() - preproc_ts:.3f} seconds")
             if FilteringParameters.preprocessor_action == FilteringAction.STUB and pre_filtered:
                 return random.choice(self.preprocessor.stubs), True
+
+            gen_ts = time.time()
             raw_responses = self.model.generate_text(text)
+            self.logger.debug(f"Generation: {time.time() - gen_ts:.3f} seconds")
+
+            postproc_ts = time.time()
             response, post_filtered = self.postprocessor.filter_context([text], raw_responses)
+            self.logger.debug(f"Postprocessing: {time.time() - postproc_ts:.3f} seconds")
             if FilteringParameters.postprocessor_action == FilteringAction.STUB and post_filtered:
                 return random.choice(self.postprocessor.stubs), True
             return response, False
