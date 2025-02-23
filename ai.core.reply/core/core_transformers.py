@@ -38,7 +38,7 @@ class ModelGenerator:
 
         self.logger.debug(f"Generating response for: {prompt}")
         start = time.time()
-        encoded_context = self.tokenizer.encode(prompt,
+        encoded_context = self.tokenizer(prompt,
                                                 return_tensors='pt',
                                                 padding=True).to(self.device)
         self.logger.debug("Tokenization: %.3f seconds" % (time.time() - start))
@@ -47,8 +47,9 @@ class ModelGenerator:
         responses_ids = None
         with torch.inference_mode():
             responses_ids = self.model.generate(
-                encoded_context,
+                input_ids=encoded_context["input_ids"],
                 pad_token_id=self.tokenizer.eos_token_id,
+                attention_mask=encoded_context["attention_mask"],
                 **InferenceParameters.model_params,
                 bad_words_ids=self.bad_words_ids,
             )
