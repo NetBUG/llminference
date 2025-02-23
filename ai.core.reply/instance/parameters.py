@@ -12,7 +12,7 @@ MAX_NEW_TOKENS = 50
 
 # Version for 24+ Gb GPU RAM (fits into 16 Gb with small context)
 class InferenceParameters:
-    model_name = 'allenai/Llama-3.1-Tulu-3.1-8B' 
+    model_name = 'allenai/Llama-3.1-Tulu-3.1-8B'
     system_prompt = "You are Tulu 3, a helpful and harmless AI Assistant built by the Allen Institute for AI.<|user|>\n{user_query}\n<|assistant|>\n"
     model_params = {
         "max_new_tokens": MAX_NEW_TOKENS, # max_tokens
@@ -25,7 +25,7 @@ class InferenceParameters:
 
 # Version for 4+ Gb GPU RAM
 class MinimalInferenceParameters:
-    model_name = 'gpt2' 
+    model_name = 'gpt2'
     system_prompt = "You are a bot called. Answer a question for a user please.\nUser:{user_query}\nBot:"
     prompt = "<|user|>\nHow are you doing?\n<|assistant|>\n<|endoftext|>"
     model_params = {

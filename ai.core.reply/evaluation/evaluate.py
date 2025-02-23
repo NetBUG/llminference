@@ -16,6 +16,7 @@ from core import gen_pipeline
 from core.utils.device_selector import select_device
 from instance.logger import logger as base_logger
 from instance.parameters import EmptyResponseException
+from instance.typings import RequestContext
 
 logger = base_logger.bind(corr_id='EVAL')
 
@@ -30,21 +31,25 @@ def get_tokenizer(model: gen_pipeline.LLMPipeline) -> callable:
 
 def evaluate(model: object, questions: list[str], iterations: int = 100) -> dict:
     """Evaluate a set of questions and answers"""
-    
-    model.generate(questions[0]) # Warm-up the model
+
+    context = RequestContext()
+    context.query = questions[0]
+    context.logger = logger
+
+    model.generate(context) # Warm-up the model
 
     for i in range(iterations):
         start = time.time()
-        question = random.choice(questions)
         try:
-            response, _ = model.generate(question)
+            context.query = random.choice(questions)
+            model.generate(context)
         except EmptyResponseException as e:
             pass
         except Exception as e:
             logger.error(f"error! {e}")
-        q_len = len(get_tokenizer(model)(question).input_ids)
-        a_len = len(get_tokenizer(model)(response).input_ids)
-        logger.debug(f"Q: {question} [{q_len}]\tA: {response} [{a_len}], T={time.time() - start:.3f}")
+        q_len = len(get_tokenizer(model)(context.query).input_ids)
+        a_len = len(get_tokenizer(model)(context.response).input_ids)
+        logger.debug(f"Q: {context.query} [{q_len}]\tA: {context.response} [{a_len}], T={time.time() - start:.3f}")
 
     # Need 
 
