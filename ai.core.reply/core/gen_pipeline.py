@@ -15,17 +15,11 @@ from instance.logger import logger as base_logger
 from instance.parameters import FilteringAction, FilteringParameters, InferenceParameters
 from core.preprocessor import Preprocessor
 from core.postprocessor import Postprocessor
+from core.utils.device_selector import select_device
 
 class LLMPipeline:
     def __init__(self, device: str | None = None):
-        self.device = torch.device("cpu")
-        if device is None:
-            if torch.backends.mps.is_available():
-                self.device = torch.device("mps")
-            elif torch.cuda.is_available():
-                self.device = torch.device("cuda")
-        else:
-            self.device = torch.device(device)
+        self.device = select_device(device)
 
         self.logger = base_logger.bind(corr_id='PIPELINE')
 
