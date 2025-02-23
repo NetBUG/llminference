@@ -26,31 +26,32 @@ class ModelGenerator:
         self.model = AutoModelForCausalLM.from_pretrained(self.model_name,
                                                           token=self.token,
                                                           torch_dtype=torch.float16,
-                                                          # use_flash_attention_2=True,
                                                           low_cpu_mem_usage=True,
                                             ).to(self.device)
+        
+        # [[self.tokenizer.eos_token_id]]
+        self.bad_words_ids = self.tokenizer(InferenceParameters.bad_words).input_ids
+        self.tokenizer.pad_token = self.tokenizer.eos_token       
 
     def generate_text(self, text: str):
         prompt = InferenceParameters.system_prompt.format(user_query=text)
 
         self.logger.debug(f"Generating response for: {prompt}")
+        start = time.time()
         encoded_context = self.tokenizer.encode(prompt,
                                                 return_tensors='pt',
-                                                return_attention_mask=True,
                                                 padding=True).to(self.device)
+        self.logger.debug("Tokenization: %.3f seconds" % (time.time() - start))
         encoded_context_len = len(encoded_context[0])
 
         responses_ids = None
         with torch.inference_mode():
-            start = time.time()
             responses_ids = self.model.generate(
-                encoded_context, # encoded_context["input_ids"],
-                # attention_mask=encoded_context["attention_mask"],
+                encoded_context,
                 pad_token_id=self.tokenizer.eos_token_id,
-                **InferenceParameters.model_params
-                # Also bad_words_ids may be used to prohibit model from using some tokens
+                **InferenceParameters.model_params,
+                bad_words_ids=self.bad_words_ids,
             )
-            self.logger.debug("Generation: %.3f seconds" % (time.time() - start))
 
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
@@ -58,6 +59,6 @@ class ModelGenerator:
         responses = [self.tokenizer.decode(logits[encoded_context_len:], \
                                            skip_special_tokens=True) for logits in responses_ids]
 
-        self.logger.debug(f"Raw responses: {responses}")
+        self.logger.trace(f"Raw responses: {responses}")
 
         return responses
