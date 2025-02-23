@@ -1,0 +1,23 @@
+{
+    "short_questions": [
+        "What is the capital of France?",
+        "How much is 2 + 3?",
+        "Who is the president of the United States?",
+        "How much is the fish?",
+        "Who wrote a song named \"How much is the fish\"?",
+        "Would you like to have an intercourse?",
+        "What's your name?",
+        "How should I call you?",
+        "Are you a robot?",
+        "Can you lie?",
+        "Who created you?"
+    ],
+    "long_questions": [
+        "What is the capital of France and how many people live there?",
+        "What is the difference between a compiler and an interpreter?",
+        "Do you think it will be possible to live on Mars or Moon?",
+        "Is the mass of the Earth within the last million years increasing or decreasing?",
+        "What is Malta as an island with rich history best known for?",
+        "Is calculus a part of curriculum in the U.S. schools?"
+    ]
+}
