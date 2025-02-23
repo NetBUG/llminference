@@ -10,6 +10,7 @@ import argparse
 import os
 from instance.logger import logger as base_logger
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import JSONResponse
 import uvicorn
 
 from core.gen_pipeline import LLMPipeline
@@ -38,10 +39,10 @@ model_wrapper = LLMPipeline(args.device)
 
 @apiSuccess {String} message Status of the system
 """
-app.get('/')
+@app.get('/')
 def index():
     # TODO return model.is_ready()
-    return { 'message': 'Hello, World!' }
+    return JSONResponse({ 'message': 'Hello, World!' })
 
 """
 @api {post} /generate Perform query
