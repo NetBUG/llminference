@@ -18,7 +18,7 @@ class ModelGenerator:
     def __init__(self, device: str = 'cpu'):
         self.token = os.environ.get('HF_TOKEN', None)
         self.model_name = InferenceParameters.model_name
-        self.logger = base_logger.bind(corr_id='MODELGEN')
+        self.logger = base_logger.bind(corr_id='GEN_MDL')
         self.device = torch.device(device)
 
         # Load model

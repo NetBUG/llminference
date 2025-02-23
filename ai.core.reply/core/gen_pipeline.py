@@ -10,7 +10,8 @@ import random
 import time
 from typing import Tuple
 
-from core.core_transformers import ModelGenerator
+# from core.core_transformers import ModelGenerator
+from core.core_vllm import ModelGenerator
 from instance.logger import logger as base_logger
 from instance.parameters import FilteringAction, FilteringParameters, InferenceParameters
 from core.preprocessor import Preprocessor
