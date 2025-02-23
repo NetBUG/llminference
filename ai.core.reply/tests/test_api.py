@@ -13,9 +13,6 @@ from fastapi.testclient import TestClient
 
 from instance.logger import logger as base_logger
 logger = base_logger.bind(corr_id='TEST_API')
-# from instance.parameters import InferenceParameters, MinimalInferenceParameters
-
-# InferenceParameters.model_name = MinimalInferenceParameters.model_name
 
 class MockLLMPipeline:
     def __init__(self, device: str):

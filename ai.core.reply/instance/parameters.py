@@ -26,11 +26,11 @@ class InferenceParameters:
         # "repetition_penalty": 1.15,
         # "do_sample": True
     }
-    bad_words = ["also"]
+    bad_words = ["kill"]
 
 # Version for 4+ Gb GPU RAM
 class MinimalInferenceParameters:
-    model_name = 'microsoft/DialoGPT-small' 
+    model_name = 'gpt2' 
     system_prompt = "You are a bot called. Answer a question for a user please.\nUser:{user_query}\nBot:"
     prompt = "<|user|>\nHow are you doing?\n<|assistant|>\n<|endoftext|>"
     model_params = {
