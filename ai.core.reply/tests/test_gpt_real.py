@@ -1,12 +1,15 @@
-import pytest
-import sys
-
-# As from https://fastapi.tiangolo.com/tutorial/testing/#testing-file
-from fastapi.testclient import TestClient
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# @Time    : 2025/02/23 23:00
+# @Author  : Oleg Urzhumtsev aka @netbug
+# @Site    : https://github.com/NetBUG/llminference
+# @File    : tests/test_gpt_real.py
+# This file contains test for core/gen_pipeline.py
 
 from core.gen_pipeline import LLMPipeline
 from instance.logger import logger as base_logger
 from instance.parameters import InferenceParameters, MinimalInferenceParameters
+from instance.typings import RequestContext
 
 logger = base_logger.bind(corr_id='TEST_GPT')
 InferenceParameters.model_name = MinimalInferenceParameters.model_name
@@ -16,7 +19,10 @@ InferenceParameters.model_params["do_sample"] = True
 def test_e2e_real_cpu():
     # Import the main function from the app module
     pipeline = LLMPipeline()    # params with gpt2 and cpu
-    response = pipeline.generate("Hello, World!")
+    context = RequestContext()
+    context.query = "How are you doing?"
+    context.logger = logger
+    response = pipeline.generate(context)
     assert type(response) == tuple
     assert len(response) == 2
     assert type(response[0]) == str
