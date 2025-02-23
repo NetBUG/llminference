@@ -64,4 +64,3 @@ class Preprocessor:
         if self.filtering_action == FilteringAction.FILTER:
             message = " ".join([word for word in text.split() if word.lower() not in self.blacklist])
         return message, self.check_blacklist(message)
-    
