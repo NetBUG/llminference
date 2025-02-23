@@ -23,7 +23,8 @@ def test_e2e_real_cpu():
     context.query = "How are you doing?"
     context.logger = logger
     response = pipeline.generate(context)
-    assert type(response) == tuple
-    assert len(response) == 2
-    assert type(response[0]) == str
-    assert type(response[1]) == bool
+    assert type(context) == RequestContext
+    assert type(context.raw_responses) == list
+    assert len(context.raw_responses) == InferenceParameters.model_params["num_return_sequences"]
+    assert type(context.response) == str
+    assert type(context.filtered) == bool

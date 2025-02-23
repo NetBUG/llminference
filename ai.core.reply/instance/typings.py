@@ -23,5 +23,6 @@ class RequestContext:
     query = ""
     history = []
     response = None
+    raw_responses = []
     filtered = False
     status = 'ok'

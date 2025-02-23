@@ -52,11 +52,11 @@ class LLMPipeline:
                 return
 
             gen_ts = time.time()
-            raw_responses = self.model.generate_text(text)
+            context.raw_responses = self.model.generate_text(text)
             context.logger.debug(f"Generation: {time.time() - gen_ts:.3f} seconds")
 
             postproc_ts = time.time()
-            context.response, context.filtered = self.postprocessor.filter_context([text], raw_responses)
+            context.response, context.filtered = self.postprocessor.filter_context([text], context.raw_responses)
             context.logger.debug(f"Postprocessing: {time.time() - postproc_ts:.3f} seconds")
             if FilteringParameters.postprocessor_action == FilteringAction.STUB and context.filtered:
                 context.response = random.choice(self.preprocessor.stubs)
