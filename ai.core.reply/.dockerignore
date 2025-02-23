@@ -1,0 +1,17 @@
+# Mac dev files
+.DS_Store
+
+# Python temp files
+*.pyc
+__pycache__
+.pytest*
+
+# IPython notebooks
+.ipynb*
+
+# Local development files
+*.whl
+
+#dev
+.vscode
+.idea/
