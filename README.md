@@ -19,6 +19,13 @@ The solution would have:
 You are free to design your own solution.
 
 ## Design considerations
+**Model** chosen is [`allenai/Llama-3.1-Tulu-3.1-8B`](https://huggingface.co/allenai/Llama-3.1-Tulu-3.1-8B). It was chosen as a model with instruction training able to perform tasks in user query. 
+It has shown decent performance on multiple tests; its larger counterpart with 70B size includes latest training approaches including GRPO to improve behavior on tasks where formal assessment can be performed.
+
+In case one has a Huggingface account with access to `meta-llama/Meta-Llama-3.1-8B-Instruct`, it can be set in `instance/parameters.py` to assess the behavior of the original LLaMA-3.1 model.
+
+Model size was chosen to ensure model to fit into a single common GPU with 24 Gb of RAM; for testing purposes, smaller models of the same architecture can be chosen down to 1.5B models.
+
 **Preprocessing** was implemented using blacklists and is present just to display a pipeline with pre- and postprocessing. For any given business-related task preprocessing must be carefully designed with all requirements in mind, including safety, simplicity and interfacing. Thus, for a dialog-based system prompt building is necessary with conversation sequence preservation; for a contextless AI assistant sensitive topics need to be determined.
 <...>
 **Inference** was optimized for execution with NVidia GPUs and MPS on Apple Mx ARM chips.
@@ -40,7 +47,21 @@ The simplest client could be a cURL request executed from a command line:
 ```sh
    curl --location 'http://localhost:8000/generate' --header 'Content-Type: application/json' --data '{ "text": "How much is 2 + 3?" }'
 ```
-The API is designed to be integrated as a service into a larger system, please check [API documentation](/apidoc) to do so.
+The API is designed to be integrated as a service into a larger system, please check [API documentation](/doc) to do so.
+
+### API Documentation
+The API was documented according to [APIDoc](https://apidocjs.com/) standards.
+
+#### Prerequisites
+Install `apidoc`:
+```sh
+    npm install -g apidoc
+```
+
+#### Generate (updated) documentation
+```sh
+    cd ai.core.reply && apidoc -i instance
+```
 
 ## Running tests
 Run `run_tests.sh`
