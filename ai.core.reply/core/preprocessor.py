@@ -48,7 +48,7 @@ class Preprocessor:
         else:
             last_delims = [msg.rfind(c) for c in delim]
             if max(last_delims) > soft_limit:
-                msg = msg[:max(last_delims) + 1]
+                msg = msg[:max(last_delims) + 1].strip()
         return msg, len(msg) != len(src_msg)
 
     def check_blacklist(self, text: str) -> bool:
