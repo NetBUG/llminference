@@ -23,19 +23,36 @@ class ModelGenerator:
 
         # Load model
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_name, token=self.token)
-        self.model = AutoModelForCausalLM.from_pretrained(self.model_name, token=self.token).to(self.device)
+        self.model = AutoModelForCausalLM.from_pretrained(self.model_name,
+                                                          token=self.token,
+                                                          torch_dtype=torch.float16,
+                                                          # use_flash_attention_2=True,
+                                                          low_cpu_mem_usage=True,
+                                            ).to(self.device)
+
+        # self.generator = pipeline('text-generation', model=self.model, tokenizer=self.tokenizer)
+
+    def generate_pipeline(self, text: str):
+        prompt = InferenceParameters.system_prompt.format(user_query=text)
+        return self.generator(prompt, **InferenceParameters.model_params)
 
     def generate_text(self, text: str):
-        self.logger.debug(f"Generating response for: {text}")
-        encoded_context = self.tokenizer.encode(text, return_tensors='pt').to(self.device)
+        prompt = InferenceParameters.system_prompt.format(user_query=text)
+
+        self.logger.debug(f"Generating response for: {prompt}")
+        encoded_context = self.tokenizer.encode(prompt,
+                                                return_tensors='pt',
+                                                return_attention_mask=True,
+                                                padding=True).to(self.device)
         encoded_context_len = len(encoded_context[0])
 
         responses_ids = None
         with torch.inference_mode():
             start = time.time()
             responses_ids = self.model.generate(
-                encoded_context,  # ["input_ids"],
+                encoded_context, # encoded_context["input_ids"],
                 # attention_mask=encoded_context["attention_mask"],
+                pad_token_id=self.tokenizer.eos_token_id,
                 **InferenceParameters.model_params
                 # Also bad_words_ids may be used to prohibit model from using some tokens
             )
@@ -46,6 +63,7 @@ class ModelGenerator:
 
         responses = [self.tokenizer.decode(logits[encoded_context_len:], \
                                            skip_special_tokens=True) for logits in responses_ids]
-        self.logger.debug(f"Generated responses: {responses}")
+
+        self.logger.debug(f"Raw responses: {responses}")
 
         return responses
