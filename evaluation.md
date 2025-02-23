@@ -60,7 +60,7 @@ Python 3.11 showed slight although statistically insignificant increase in gener
 
 NVidia drivers version 550.127.08 were used on all GPU-enabled machines.
 
-A table is shown below to reflect outcomes achieved:
+A table is shown below to reflect outcomes achieved (a bonus dumb `gpt2` was added):
 
 | Platform                        | RPM vLLM Avg | RPM trl | in tok/s<br>(VLLM) | out tok/s<br>(VLLM) |
 | ------------------------------- | ------------ | ------- | ------------------ | ------------------- |
@@ -73,3 +73,4 @@ A table is shown below to reflect outcomes achieved:
 | AMD EPYC 9124 CPU               | N/A          | 0.1057  | N/A                | N/A                 |
 | i5-10700 CPU                    | N/A          | 0.043   | N/A                | N/A                 |
 | Intel Core2Duo T7500 CPU        | N/A          | 0.012   | N/A                | N/A                 |
+| gpt2-medium RTX A6000 @ 48Gb    | 921          | 131.4   | 1184               | 463.1               |
