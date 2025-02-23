@@ -24,4 +24,4 @@ COPY . .
 RUN chown -R myuser:myuser /app
 USER myuser
 
-CMD ["python3", "instance/app.py", "--port", "$HTTP_PORT"]
+CMD ["/bin/sh", "-c", "python3 instance/app.py --port $HTTP_PORT"]
