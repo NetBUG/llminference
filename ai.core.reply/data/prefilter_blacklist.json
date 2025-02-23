@@ -1,0 +1,17 @@
+{
+    "prefilter_blacklist": [
+        "functional",
+        "pattern",
+        "pointer",
+        "lambda",
+        "oop",
+        "stl",
+        "template",
+        "stallman"
+    ],
+    "prefilter_blacklist_reasons": [
+        "These words are blacklisted because they are considered misleading. This can lead to unwanted results.",
+        "Please be careful with the words you use. They can have a big impact on the results you get.",
+        "Watch out. Do not become a C++ programmer. It is a trap."
+    ]
+}

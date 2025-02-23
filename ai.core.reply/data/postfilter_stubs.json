@@ -1,0 +1,8 @@
+{
+    "postfilter_blacklist_reasons": [
+        "I am sorry, I cannot help you with that.",
+        "I am sorry, I cannot provide that information.",
+        "Big Brother is watching you and wishes you all the best.",
+        "Watch out. Do not become a C++ programmer. It is a trap."
+    ]
+}
