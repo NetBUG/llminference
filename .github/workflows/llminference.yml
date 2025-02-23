@@ -56,10 +56,10 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6.13.0
         if: github.ref == 'refs/heads/master'
-        working-directory: ./ai.core.reply
         with:
           context: .
-          file: ./Dockerfile
+          working-directory: ./ai.core.reply
+          file: ./ai.core.reply/Dockerfile
           platforms: linux/amd64
           push: true
           tags: ${{ steps.docker_meta.outputs.tags }}
@@ -67,9 +67,9 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v6.13.0
         if: github.ref == !'refs/heads/master'
-        working-directory: ./ai.core.reply
         with:
           context: .
-          file: ./Dockerfile
+          working-directory: ./ai.core.reply
+          file: ./ai.core.reply/Dockerfile
           platforms: linux/amd64
           tags: ${{ steps.docker_meta.outputs.tags }}
