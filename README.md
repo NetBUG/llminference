@@ -14,7 +14,7 @@ The service should have an HTTP API and be wrapped in Docker to run it on an Nvi
 The solution should have:
  - [x] tests
  - [x] the README how to deploy and evaluate the system
- - [ ] a benchmark tool to evaluate service performance with different numbers of users and request lengths (any additional measurements are welcome)
+ - [x] a benchmark tool to evaluate service performance with different numbers of users and request lengths (any additional measurements are welcome)
  - [ ] performance analysis under various loads and findings about optimal configurations
 
 ## Design considerations
