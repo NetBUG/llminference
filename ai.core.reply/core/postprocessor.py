@@ -15,7 +15,7 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 from core.utils.blacklists import load_lists
 from instance.logger import logger as base_logger
-from instance.parameters import FilteringAction, FilteringParameters
+from instance.parameters import FilteringAction, FilteringParameters, EmptyResponseException
 
 class Postprocessor():
     error_count = 0
@@ -70,11 +70,7 @@ class Postprocessor():
         text = re.sub(f"<s>", "", text)
         text = text.split("</s>")[0]
 
-        sentences = text.strip().split("\n")    # For simplicity
-
-        out = " ".join(sentences[0:-1])
-
-        out = out.strip("\n").strip()
+        out = text.strip("\n").strip()
         out = out.strip(".").strip()
         out = out.replace("  ", " ")
         return out
@@ -124,7 +120,9 @@ class Postprocessor():
 
         responses = [self.output_post_processing(response) for response in responses]
         responses = [response for response in responses if len(response) > 0]
-        self.logger.debug(f"Generated responses: {responses}")
+        self.logger.debug(f"Filtered responses: {responses}")
+        if len(responses) == 0:
+            raise EmptyResponseException("No responses were generated!")
 
         filtered_responses = [resp for resp in responses if self.assess_response(history, resp)]
         self.logger.debug(f"Remaining responses: {filtered_responses}")
