@@ -7,10 +7,11 @@
 # This file contains main application entrypoint
 
 import argparse
-import os
 from instance.logger import logger as base_logger
+from instance.typings import RequestContext
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
+import random
 import uvicorn
 
 from core.gen_pipeline import LLMPipeline
@@ -59,10 +60,16 @@ def index():
 """
 @app.post('/generate')
 def generate(payload: dict):
+    context = RequestContext()
+    # Initialize logger with uniqie correlation ID
+    context.logger = base_logger.bind(corr_id='REQ_%d' % random.randint(1000, 9999))
     try:
-        text = payload['text']
-        resp, is_filtered = model_wrapper.generate(text)
-        return { "query": text, "message": resp, "filtered": is_filtered }
+        context.query = payload['text']
+        model_wrapper.generate(context)
+        return { "query": context.query,
+                 "message": context.response,
+                 "filtered": context.filtered,
+                 "status": context.status }
     except ValueError as e:
         logger.error(f"Error obtaining text: {e}")
         raise HTTPException(status_code=400, detail={ "message": str(e) })
