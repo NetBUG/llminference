@@ -26,6 +26,7 @@ class InferenceParameters:
         # "repetition_penalty": 1.15,
         # "do_sample": True
     }
+    bad_words = ["also"]
 
 # Version for 4+ Gb GPU RAM
 class MinimalInferenceParameters:
@@ -61,7 +62,7 @@ class VLLMParams:
         "length_penalty": 1.0,
         "early_stopping": False,
         "max_tokens": MAX_NEW_TOKENS,
-        "stop_token_ids": [EOM_ID],
+        # "stop_token_ids": [EOM_ID],
         "ignore_eos": False,
         "skip_special_tokens": True,
         "spaces_between_special_tokens": True
