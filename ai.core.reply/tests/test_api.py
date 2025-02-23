@@ -18,6 +18,9 @@ class MockLLMPipeline:
     def __init__(self, device: str):
         logger.info(f'Loading no model for tests')
 
+    def is_ready(self):
+        return True
+
     def generate(self, text: str):
         return 'Hello, World!'
 
@@ -36,15 +39,22 @@ def mock_lib_installed():
 
 
 def test_mock_lib_installed(mock_lib_installed):
+    """
+        Test that the mock library is installed and 
+        we can run tests without actual GPT model being loaded
+    """
     # Import the main function from the app module
     from instance.app import app
     assert "core.gen_pipeline" in sys.modules
 
 
 def test_api_running(mock_lib_installed):
+    """
+        Test that the API is running and returns the expected response
+    """
     # Import the main function from the app module
     from instance.app import app as app_main
     client = TestClient(app_main)
     response = client.get("/")
     assert response.status_code == 200
-    assert response.json() == { "message": "Hello, World!" }
+    assert response.json() == { "status": "ok" }

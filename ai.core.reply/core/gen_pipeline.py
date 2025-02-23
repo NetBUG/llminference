@@ -34,6 +34,9 @@ class LLMPipeline:
         self.preprocessor = Preprocessor()
         self.postprocessor = Postprocessor(self.device)
 
+    def is_ready(self) -> bool:
+        return self.model and self.postprocessor.is_ready()
+
     def generate(self, text: str) -> Tuple[str, bool]:
         try:
             text, pre_filtered = self.preprocessor.filter_text(text)

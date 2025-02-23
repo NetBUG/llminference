@@ -11,6 +11,7 @@ from instance.parameters import InferenceParameters, MinimalInferenceParameters
 logger = base_logger.bind(corr_id='TEST_GPT')
 InferenceParameters.model_name = MinimalInferenceParameters.model_name
 InferenceParameters.model_params["num_return_sequences"] = 1
+InferenceParameters.model_params["do_sample"] = True
 
 def test_e2e_real_cpu():
     # Import the main function from the app module

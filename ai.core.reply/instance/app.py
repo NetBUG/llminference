@@ -41,8 +41,7 @@ model_wrapper = LLMPipeline(args.device)
 """
 @app.get('/')
 def index():
-    # TODO return model.is_ready()
-    return JSONResponse({ 'message': 'Hello, World!' })
+    return JSONResponse({ 'status': "ok" if model_wrapper.is_ready() else "loading" })
 
 """
 @api {post} /generate Perform query
