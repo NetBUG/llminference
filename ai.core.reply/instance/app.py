@@ -64,10 +64,10 @@ def generate(payload: dict):
     try:
         text = payload['text']
         resp, is_filtered = model_wrapper.generate(text)
-        return { "query": text, "message": resp, "filtered": is_filtered, "status": "ok" }
+        return { "query": text, "message": resp, "filtered": is_filtered }
     except ValueError as e:
         logger.error(f"Error obtaining text: {e}")
-        raise HTTPException(status_code=400, detail={ "message": str(e), "status": "error" })
+        raise HTTPException(status_code=400, detail={ "message": str(e) })
 
 def main():
     uvicorn.run(app, host=args.ip, port=args.port)
