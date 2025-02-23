@@ -15,7 +15,7 @@ The solution should have:
  - [x] tests
  - [x] the README how to deploy and evaluate the system
  - [x] a benchmark tool to evaluate service performance with different numbers of users and request lengths (any additional measurements are welcome)
- - [ ] performance analysis under various loads and findings about optimal configurations
+ - [x] performance analysis under various loads and findings about optimal configurations
 
 ## Design considerations
 **Model** chosen is [`allenai/Llama-3.1-Tulu-3.1-8B`](https://huggingface.co/allenai/Llama-3.1-Tulu-3.1-8B). It was chosen as a model with instruction training able to perform tasks in user query. 
@@ -43,6 +43,8 @@ Two-step **build** with plain Docker was chosen, as no limitations have been set
 ## Deployment
 Run `run_inference.sh` to execute the chain, or build and run manually the image from `ai.core.reply` subfolder.
 It is supposed that we have a __containerd__ installed with `docker-cli` interface. For other setups (including __nerdctl__, usage of buildx) please adjust shell scripts accordingly.
+
+It is also supposed that [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html) is installed in order to reproduce evaluation results.
 
 ## Usage
 The simplest client could be a cURL request executed from a command line:

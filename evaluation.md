@@ -6,7 +6,8 @@ Assessment shows exerpts from a grid search using
  - short queries / full set
  - absent/present system prompt
  - different hardware (see below)
- - three different models
+
+As there is no actual model in question, different models/model sizes or parameter sets were not tested. However, test code can be easily adapted to compare different parameter sets across runs, e.g. `Llama-3.1-Tulu-3.1-8B` to vanilla `Llama-3.1-8B` or `Llama-3.2-3B`, or different sets of parameters with varying sampling or repetition penalty.
 
 Target variables were RPM based on a query dataset and optionally performance in tokens/sec (in/out).
 
@@ -42,6 +43,8 @@ CID: EVAL	Long questions evaluated: 41.108s, average 145.957 RPM
 ```
 
 ## Evaluation results
+Thus, current page covers a comparison of performance of the same `Llama-3.1-Tulu-3.1-8B` model with identical (to the degree of statistical comparability on given dataset) generation parameters with varying hardware in two inference frameworks.
+
 As evaluation showed, VLLM affects significantly the performance of inference. Initial hypothesis that it isn't crucial for achieving high performance failed and had to be removed from current text.
 
 As said above, it's hard to assess user load on the service, but if the number of users can be converted into number of requests, a single instance can load the peak loads from a table below.
@@ -57,7 +60,7 @@ Python 3.11 showed slight although statistically insignificant increase in gener
 
 NVidia drivers version 550.127.08 were used on all GPU-enabled machines.
 
-A table is shown below to reflect outcomes achieved:
+A table is shown below to reflect outcomes achieved (a bonus dumb `gpt2` was added):
 
 | Platform                        | RPM vLLM Avg | RPM trl | in tok/s<br>(VLLM) | out tok/s<br>(VLLM) |
 | ------------------------------- | ------------ | ------- | ------------------ | ------------------- |
@@ -70,3 +73,4 @@ A table is shown below to reflect outcomes achieved:
 | AMD EPYC 9124 CPU               | N/A          | 0.1057  | N/A                | N/A                 |
 | i5-10700 CPU                    | N/A          | 0.043   | N/A                | N/A                 |
 | Intel Core2Duo T7500 CPU        | N/A          | 0.012   | N/A                | N/A                 |
+| gpt2-medium RTX A6000 @ 48Gb    | 921          | 131.4   | 1184               | 463.1               |
