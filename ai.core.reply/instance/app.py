@@ -18,7 +18,6 @@ from core.gen_pipeline import LLMPipeline
 
 logger = base_logger.bind(corr_id='APP')
 
-# Parse command-line arguments
 ap = argparse.ArgumentParser()
 ap.add_argument('-p', '--port', help='Port to be listened', type=int, default=8000)
 ap.add_argument('-i', '--ip', help='IP of the interface to listen. Defaults to 0.0.0.0', default='0.0.0.0')
@@ -26,7 +25,6 @@ ap.add_argument('-d', '--device', help='Device for model deployment', default=No
 
 args = ap.parse_args()
 
-# Set up FastAPI
 app = FastAPI()
 
 # Load model

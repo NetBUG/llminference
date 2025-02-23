@@ -1,25 +1,27 @@
-FROM python:3.12-slim-bookworm AS py312-torch-base
-# FROM gcr.io/distroless/python3-debian12
+FROM docker.io/library/python:3.12-slim-bookworm AS builder
 
+WORKDIR /install
 COPY requirements.txt .
 
-RUN python3 -m pip install --upgrade cython pip && \
-    python3 -m pip install torch==2.5.1 && \
-    python3 -m pip install -r requirements.txt
+RUN python3 -m pip install --no-cache-dir --upgrade cython pip && \
+    python3 -m pip install --no-cache-dir --target=/install torch==2.5.1 && \
+    python3 -m pip install --no-cache-dir --target=/install -r requirements.txt
 
 
-FROM py312-torch-base
+FROM python:3.12-slim-bookworm
 
-ARG PORT=8000
+RUN useradd -m myuser
 
+ENV HTTP_PORT=8000
+ENV HF_HOME=/app/cache
+ENV PYTHONPATH=/app
+
+COPY --from=builder /install /usr/local/lib/python3.12/site-packages
 WORKDIR /app
 
 COPY . .
 
-ENV HTTP_PORT=${PORT}
-ENV HF_HOME=/app/cache
-ENV PYTHONPATH=/app
+RUN chown -R myuser:myuser /app
+USER myuser
 
-EXPOSE ${HTTP_PORT}/tcp
-
-CMD python3 instance/app.py --port ${HTTP_PORT}
+CMD ["/bin/sh", "-c", "python3 instance/app.py --port $HTTP_PORT"]

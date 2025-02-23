@@ -16,13 +16,10 @@ class InferenceParameters:
     system_prompt = "You are Tulu 3, a helpful and harmless AI Assistant built by the Allen Institute for AI.<|user|>\n{user_query}\n<|assistant|>\n"
     model_params = {
         "max_new_tokens": MAX_NEW_TOKENS, # max_tokens
-        # "num_beams": 2,
         "num_return_sequences": 2,
         "temperature": 0.55,
         "early_stopping": False,
         "no_repeat_ngram_size": 3,
-        # "repetition_penalty": 1.15,
-        # "do_sample": True
     }
     bad_words = ["kill"]
 
@@ -47,23 +44,14 @@ class MinimalInferenceParameters:
 class VLLMParams:
     use_sampling_params = True
     context_reduce_factor = 1.
+    model_name = 'allenai/Llama-3.1-Tulu-3.1-8B' 
+    system_prompt = "You are Tulu 3, a helpful and harmless AI Assistant built by the Allen Institute for AI.<|user|>\n{user_query}\n<|assistant|>\n"
+    MAX_GPU_MEM = 0.95
+    MAX_MODEL_SEQ_LEN = 1024
 
     generation_params_sample = {
-        "n": 3,
-        "best_of": 3,
-        "temperature": 0.8,
-        "top_p": 0.8,
-        "use_beam_search" : False,
-        "repetition_penalty": 1.15,
-        "presence_penalty": 0.1,
-        "frequency_penalty": 0.2,
-        "length_penalty": 1.0,
-        "early_stopping": False,
-        "max_tokens": MAX_NEW_TOKENS,
-        # "stop_token_ids": [EOM_ID],
-        "ignore_eos": False,
-        "skip_special_tokens": True,
-        "spaces_between_special_tokens": True
+        "temperature": 0.55,
+        "top_p": 0.95,
     }
 
 class FilteringParameters:
