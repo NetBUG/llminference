@@ -11,12 +11,11 @@ You can use some opensource ML model or rules library for this task (it is assum
 In the end, you should have a 3-step pipeline that solves the given task.
 The service should have an HTTP API and be wrapped in Docker to run it on an Nvidia GPU or CPU (you can choose the hardware).
 
-The solution would have:
-* tests
-* the README how to deploy and evaluate the system
-* a benchmark tool to evaluate service performance with different numbers of users and request lengths (any additional measurements are welcome)
-* performance analysis under various loads and findings about optimal configurations
-You are free to design your own solution.
+The solution should have:
+ - [x] tests
+ - [x] the README how to deploy and evaluate the system
+ - [ ] a benchmark tool to evaluate service performance with different numbers of users and request lengths (any additional measurements are welcome)
+ - [ ] performance analysis under various loads and findings about optimal configurations
 
 ## Design considerations
 **Model** chosen is [`allenai/Llama-3.1-Tulu-3.1-8B`](https://huggingface.co/allenai/Llama-3.1-Tulu-3.1-8B). It was chosen as a model with instruction training able to perform tasks in user query. 
@@ -27,9 +26,11 @@ In case one has a Huggingface account with access to `meta-llama/Meta-Llama-3.1-
 Model size was chosen to ensure model to fit into a single common GPU with 24 Gb of RAM; for testing purposes, smaller models of the same architecture can be chosen down to 1.5B models.
 
 **Preprocessing** was implemented using blacklists and is present just to display a pipeline with pre- and postprocessing. For any given business-related task preprocessing must be carefully designed with all requirements in mind, including safety, simplicity and interfacing. Thus, for a dialog-based system prompt building is necessary with conversation sequence preservation; for a contextless AI assistant sensitive topics need to be determined.
-<...>
+
 **Inference** was optimized for execution with NVidia GPUs and MPS on Apple Mx ARM chips.
-<...>
+To speed up inference, vllm was used instead of vanilla transformers.
+Interface of `ModelGenerator` has been made exactly the same as for transformers inference. Parameters set does not fully intersect, however, certain effort has been made to maximize matches between response distribution for initial (small) question set in evaluation.
+
 **Postprocessing** is implemented using a RoBERTa-based toxicity classifier. Two checks are performed:
  - Single model response
  - Model response following user's query 
@@ -68,13 +69,29 @@ Install `apidoc`:
 Run `run_tests.sh`
 
 ## Evaluation
+Evaluation was aimed on assessing query execution time. Each query is processed using the same pipeline, while query set, inference parameters and hardware were varied.
+Assessment shows exerpts from a grid search using 
+ - short queries / full set
+ - absent/present system prompt
+ - different hardware (see below)
+ - three different models
 
+Target variables: RPM, tokens/sec.
+
+<...>
+
+vLLM does not seem to have significant influence on small queries, speeding up from circa 0.6 to 0.42s per query on an A6000 GPU. However, that's around 30% increase, that, despite the advantage slightly reducing with large context size (1000 tokens and more benefit ~22-25% from vLLM) will affect user experience even more
+
+**Response assessment** was not considered a part of the task.
+
+An adversarial system like [that](https://github.com/NetBUG/llmplayground/blob/master/llm_assessment/openai_tests.py) can be suggested for that purpose, however, designing that system and the questions for it lies far beyond a sample task with no training: assessment system and prompts are designed to complement the training dataset for the main model. [Model memory](https://github.com/NetBUG/llmplayground/blob/master/llm_assessment/memory_tests.py), [context preservation](https://github.com/NetBUG/llmplayground/blob/master/llm_assessment/misgender_test.py), [user reference](https://github.com/NetBUG/llmplayground/blob/master/llm_assessment/empathy_tests.py) etc can also be handled with similar methods.
+
+**Notice**: As stated in the task, no internal queue was implemented, thus, with real workload actual waiting time might be higher than the pure response time shown in tables.
+Suppositions on user counts can me made given the message throughput rate, but those should be left to infrastructure design process; the service requested, designed and implemented does not deal with users, only with individual requests.
 
 ## Evaluation results
-Notice: the estimations on model load were given using <...> presupposition.
-As stated in the task, no internal queue was implemented, thus, with real load actual waiting time might be higher than the pure response time.
-Suppositions on user counts can me made given the message throughput rate, but those should be left to project team.
  - NVidia RTX3090 GPU @ 24Gb
+ - NVidia A6000 GPU @ 48Gb
  - NVidia H100 GPU @ 80Gb
  - Apple M2 CPU @ 16 Gb RAM
  - Intel Core2Duo CPU @ 16 Gb RAM
