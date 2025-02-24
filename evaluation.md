@@ -43,8 +43,6 @@ CID: EVAL	Long questions evaluated: 41.108s, average 145.957 RPM
 ```
 
 ## Evaluation results
-Thus, current page covers a comparison of performance of the same `Llama-3.1-Tulu-3.1-8B` model with identical (to the degree of statistical comparability on given dataset) generation parameters with varying hardware in two inference frameworks.
-
 As evaluation showed, VLLM affects significantly the performance of inference. Initial hypothesis that it isn't crucial for achieving high performance failed and had to be removed from current text.
 
 As said above, it's hard to assess user load on the service, but if the number of users can be converted into number of requests, a single instance can load the peak loads from a table below.
