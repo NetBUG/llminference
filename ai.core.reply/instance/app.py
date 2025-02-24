@@ -8,7 +8,7 @@
 
 import argparse
 from instance.logger import logger as base_logger
-from instance.typings import RequestContext
+from instance.typings import EmptyResponseException, RequestContext
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 import random
@@ -70,7 +70,7 @@ def generate(payload: dict):
                  "message": context.response,
                  "filtered": context.filtered,
                  "status": context.status }
-    except ValueError as e:
+    except Exception as e:
         logger.error(f"Error obtaining text: {e}")
         raise HTTPException(status_code=400, detail={ "message": str(e) })
 
