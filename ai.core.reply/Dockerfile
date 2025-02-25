@@ -19,7 +19,7 @@ ENV PYTHONPATH=/app
 COPY --from=builder /install /usr/local/lib/python3.12/site-packages
 WORKDIR /app
 
-COPY ./ai.core.reply .
+COPY . .
 
 RUN chown -R myuser:myuser /app
 USER myuser
