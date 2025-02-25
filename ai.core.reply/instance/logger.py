@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# @Time    : 2025/02/25 22:00
+# @Author  : Oleg Urzhumtsev aka @netbug
+# @Site    : https://github.com/NetBUG/llminference
+# @File    : instance/logger.py
+# This file contains a wrapper around loguru logger
+
 from loguru import logger
 import sys
 
