@@ -1,7 +1,7 @@
 FROM docker.io/library/python:3.12-slim-bookworm AS builder
 
 WORKDIR /install
-COPY ./ai.core.reply/requirements.txt .
+COPY ./requirements.txt .
 
 RUN python3 -m pip install --no-cache-dir --upgrade cython pip && \
     python3 -m pip install --no-cache-dir --target=/install torch==2.5.1 && \
