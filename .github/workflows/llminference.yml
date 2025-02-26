@@ -67,8 +67,7 @@ jobs:
         uses: docker/build-push-action@v6.13.0
         if: github.ref == !'refs/heads/master'
         with:
-          context: .
-          path: ./ai.core.reply
+          context: ./ai.core.reply
           file: ./ai.core.reply/Dockerfile
           platforms: linux/amd64
           tags: ${{ steps.docker_meta.outputs.tags }}
