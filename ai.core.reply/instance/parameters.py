@@ -5,7 +5,7 @@
 # @Site    : https://github.com/NetBUG/llminference
 # @File    : instance/parameters.py
 # File with parameters used for inference
- 
+
 from instance.typings import FilteringAction, EmptyResponseException
 
 MAX_NEW_TOKENS = 50

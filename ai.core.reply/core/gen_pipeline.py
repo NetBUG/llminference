@@ -12,7 +12,7 @@ from typing import Tuple
 
 from instance.logger import logger as base_logger
 from instance.parameters import FilteringAction, FilteringParameters, InferenceParameters
-from instance.typings import RequestContext
+from instance.typings import EmptyResponseException, RequestContext
 from core.core_transformers import ModelGenerator as TRLModelGenerator
 from core.core_vllm import ModelGenerator as VLLMModelGenerator
 from core.preprocessor import Preprocessor
@@ -56,8 +56,14 @@ class LLMPipeline:
             context.logger.debug(f"Generation: {time.time() - gen_ts:.3f} seconds")
 
             postproc_ts = time.time()
-            context.response, context.filtered = self.postprocessor.filter_context([text], context.raw_responses)
-            context.logger.debug(f"Postprocessing: {time.time() - postproc_ts:.3f} seconds")
+            try:
+                context.response, context.filtered = self.postprocessor.filter_context([text], context.raw_responses)
+            except EmptyResponseException as e:
+                if FilteringParameters.postprocessor_action == FilteringAction.REJECT:
+                    raise e
+            finally: 
+                context.logger.debug(f"Postprocessing: {time.time() - postproc_ts:.3f} seconds")
+
             if FilteringParameters.postprocessor_action == FilteringAction.STUB and context.filtered:
                 context.response = random.choice(self.preprocessor.stubs)
         except ValueError as e:
