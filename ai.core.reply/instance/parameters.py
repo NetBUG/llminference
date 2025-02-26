@@ -68,6 +68,7 @@ class FilteringParameters:
     stub_templates_file = "data/postfilter_stubs.json"
     # filtering_model_name = 'facebook/bart-large-cnn'
     model_name = 's-nlp/roberta_toxicity_classifier'
+    postprocessor_unary_filtering_threshold = 1.9
     postprocessor_filtering_threshold = 3.75
     postprocessor_action = FilteringAction.STUB
 

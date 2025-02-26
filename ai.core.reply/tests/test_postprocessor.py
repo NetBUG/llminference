@@ -21,10 +21,10 @@ def test_get_toxic_score():
     """
 
     msg = "Hello, World!"
-    assert postprocessor.get_toxic_score(msg) < FilteringParameters.postprocessor_filtering_threshold
+    assert postprocessor.get_toxic_score(msg) > FilteringParameters.postprocessor_unary_filtering_threshold
 
     msg = "Hello, World! Go fuck yourself"
-    assert postprocessor.get_toxic_score(msg) < FilteringParameters.postprocessor_filtering_threshold
+    assert postprocessor.get_toxic_score(msg) < FilteringParameters.postprocessor_unary_filtering_threshold
 
 
 def test_postprocessing():
