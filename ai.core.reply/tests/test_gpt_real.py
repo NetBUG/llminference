@@ -6,6 +6,7 @@
 # @File    : tests/test_gpt_real.py
 # This file contains test for core/gen_pipeline.py
 
+import pytest
 from core.gen_pipeline import LLMPipeline
 from instance.logger import logger as base_logger
 from instance.parameters import InferenceParameters, MinimalInferenceParameters
@@ -16,13 +17,14 @@ InferenceParameters.model_name = MinimalInferenceParameters.model_name
 InferenceParameters.model_params["num_return_sequences"] = 1
 InferenceParameters.model_params["do_sample"] = True
 
-def test_e2e_real_cpu():
+@pytest.mark.asyncio
+async def test_e2e_real_cpu():
     # Import the main function from the app module
     pipeline = LLMPipeline()    # params with gpt2 and cpu
     context = RequestContext()
     context.query = "How are you doing?"
     context.logger = logger
-    pipeline.generate(context)
+    await pipeline.generate(context)
     assert type(context) == RequestContext
     assert type(context.raw_responses) == list
     assert len(context.raw_responses) == InferenceParameters.model_params["num_return_sequences"]

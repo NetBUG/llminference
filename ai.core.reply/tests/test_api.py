@@ -15,7 +15,7 @@ from instance.logger import logger as base_logger
 logger = base_logger.bind(corr_id='TEST_API')
 
 class MockLLMPipeline:
-    def __init__(self, device: str):
+    def __init__(self, device: str, model_type: str):
         logger.info(f'Loading no model for tests')
 
     def is_ready(self):
@@ -48,7 +48,8 @@ def test_mock_lib_installed(mock_lib_installed):
     assert "core.gen_pipeline" in sys.modules
 
 
-def test_api_running(mock_lib_installed):
+@pytest.mark.asyncio
+async def test_api_running(mock_lib_installed):
     """
         Test that the API is running and returns the expected response
     """
