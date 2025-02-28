@@ -21,6 +21,7 @@ logger = base_logger.bind(corr_id='APP')
 ap = argparse.ArgumentParser()
 ap.add_argument('-p', '--port', help='Port to be listened', type=int, default=8000)
 ap.add_argument('-i', '--ip', help='IP of the interface to listen. Defaults to 0.0.0.0', default='0.0.0.0')
+ap.add_argument('-m', '--model', help='trl or vllm model', default='vllm')
 ap.add_argument('-d', '--device', help='Device for model deployment', default=None)
 
 args = ap.parse_args()
@@ -28,7 +29,7 @@ args = ap.parse_args()
 app = FastAPI()
 
 # Load model
-model_wrapper = LLMPipeline(args.device)
+model_wrapper = LLMPipeline(args.device, model_type=args.model)
 
 """
 @api {get} / Service status
