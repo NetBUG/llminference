@@ -26,3 +26,4 @@ class RequestContext:
     raw_responses = []
     filtered = False
     status = 'ok'
+    request_id: int = None

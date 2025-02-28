@@ -60,13 +60,14 @@ def index():
 @apiError Exception The query resulted in an unknown error
 """
 @app.post('/generate')
-def generate(payload: dict):
+async def generate(payload: dict):
     context = RequestContext()
     # Initialize logger with uniqie correlation ID
-    context.logger = base_logger.bind(corr_id='REQ_%d' % random.randint(1000, 9999))
+    context.request_id = random.randint(1000, 9999)
+    context.logger = base_logger.bind(corr_id='REQ_%d' % context.request_id)
     try:
         context.query = payload['text']
-        model_wrapper.generate(context)
+        await model_wrapper.generate(context)
         return { "query": context.query,
                  "message": context.response,
                  "filtered": context.filtered,

@@ -13,6 +13,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from instance.logger import logger as base_logger
 from instance.parameters import InferenceParameters
+from instance.typings import RequestContext
 
 class ModelGenerator:
     def __init__(self, device: str = 'cpu'):
@@ -33,15 +34,15 @@ class ModelGenerator:
         self.bad_words_ids = self.tokenizer(InferenceParameters.bad_words).input_ids
         self.tokenizer.pad_token = self.tokenizer.eos_token       
 
-    def generate_text(self, text: str):
+    async def generate_text(self, text: str, context: RequestContext):
         prompt = InferenceParameters.system_prompt.format(user_query=text)
 
-        self.logger.debug(f"Generating response for: {prompt}")
+        context.logger.debug(f"Generating response for: {prompt}")
         start = time.time()
         encoded_context = self.tokenizer(prompt,
                                                 return_tensors='pt',
                                                 padding=True).to(self.device)
-        self.logger.debug("Tokenization: %.3f seconds" % (time.time() - start))
+        context.logger.debug("Tokenization: %.3f seconds" % (time.time() - start))
         encoded_context_len = len(encoded_context[0])
 
         responses_ids = None
@@ -60,6 +61,6 @@ class ModelGenerator:
         responses = [self.tokenizer.decode(logits[encoded_context_len:], \
                                            skip_special_tokens=True) for logits in responses_ids]
 
-        self.logger.trace(f"Raw responses: {responses}")
+        context.logger.trace(f"Raw responses: {responses}")
 
         return responses

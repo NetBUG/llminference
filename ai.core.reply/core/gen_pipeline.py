@@ -41,7 +41,7 @@ class LLMPipeline:
     def is_ready(self) -> bool:
         return self.model and self.postprocessor.is_ready()
 
-    def generate(self, context: RequestContext):
+    async def generate(self, context: RequestContext):
         try:
             preproc_ts = time.time()
             text, pre_filtered = self.preprocessor.filter_text(context.query)
@@ -52,7 +52,7 @@ class LLMPipeline:
                 return
 
             gen_ts = time.time()
-            context.raw_responses = self.model.generate_text(text)
+            context.raw_responses = await self.model.generate_text(text, context)
             context.logger.debug(f"Generation: {time.time() - gen_ts:.3f} seconds")
 
             postproc_ts = time.time()
