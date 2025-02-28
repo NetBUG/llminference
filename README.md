@@ -31,6 +31,10 @@ Model size was chosen to ensure model to fit into a single common GPU with 24 Gb
 To speed up inference, vllm was used instead of vanilla transformers.
 Interface of `ModelGenerator` has been made exactly the same as for transformers inference. Parameters set does not fully intersect, however, certain effort has been made to maximize matches between response distribution for initial (small) question set in evaluation.
 
+vLLM has been invoked using AsyncLLMEngine.
+The model chosen shows the following memory consumption pattern:
+`Model weights take 14.99GiB; non_torch_memory takes 0.06GiB; PyTorch activation peak memory takes 1.19GiB; the rest of the memory is reserved for KV Cache`
+
 **Postprocessing** is implemented using a RoBERTa-based toxicity classifier. Two checks are performed:
  - Single model response
  - Model response following user's query 

@@ -7,6 +7,7 @@
 # This file contains evaluation script for a set model
 
 import argparse
+import asyncio
 import json
 import random
 import time
@@ -29,14 +30,14 @@ def get_tokenizer(model: gen_pipeline.LLMPipeline) -> callable:
     """Get tokenizer from the model"""
     return model.model.tokenizer
 
-def evaluate(model: object, questions: list[str], iterations: int = 100) -> dict:
+async def evaluate(model: object, questions: list[str], iterations: int = 100) -> dict:
     """Evaluate a set of questions and answers"""
 
     context = RequestContext()
     context.query = questions[0]
     context.logger = logger
 
-    model.generate(context) # Warm-up the model
+    await model.generate(context) # Warm-up the model
 
     for i in range(iterations):
         start = time.time()
@@ -68,13 +69,13 @@ if __name__ == '__main__':
         n_iterations = args.iterations
 
         start = time.time()
-        evaluate(model, data['short_questions'], n_iterations)
+        asyncio.run(evaluate(model, data['short_questions'], n_iterations))
         logger.info(f'Short questions evaluated: {time.time() - start:.3f}s, average {n_iterations * 60 / (time.time() - start):.3f} RPM')
 
         start = time.time()
-        evaluate(model, data['long_questions'], n_iterations)
+        asyncio.run(evaluate(model, data['long_questions'], n_iterations))
         logger.info(f'Long questions evaluated: {time.time() - start:.3f}s, average {n_iterations * 60 / (time.time() - start):.3f} RPM')
 
         start = time.time()
-        evaluate(model, data['long_questions'] + data['short_questions'], n_iterations)
+        asyncio.run(evaluate(model, data['long_questions'] + data['short_questions'], n_iterations))
         logger.info(f'Mixed dataset evaluated: {time.time() - start:.3f}s, average {n_iterations * 60 / (time.time() - start):.3f} RPM')

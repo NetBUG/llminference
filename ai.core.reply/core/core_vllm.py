@@ -7,15 +7,20 @@
 # This file contains vLLM-based GPT generation model
 # It is used to generate responses for the chatbot
 
+import asyncio
+import json
 import time
 import torch
-from typing import List, Tuple
+from typing import AsyncGenerator, List, Tuple
 from transformers import AutoTokenizer
-from vllm import LLM, SamplingParams
+from vllm.engine.arg_utils import AsyncEngineArgs
+from vllm.engine.async_llm_engine import AsyncLLMEngine
+from vllm.sampling_params import SamplingParams
 
 from core.utils.texttools import filter_non_printable_symbols
 from instance.logger import logger as base_logger
 from instance.parameters import InferenceParameters, VLLMParams
+from instance.typings import RequestContext, EmptyResponseException
 
 # FIXME See https://docs.vllm.ai/en/latest/getting_started/examples/basic_with_model_default_sampling.html
 
@@ -36,35 +41,42 @@ class ModelGenerator():
 
         # Create an LLM
         self.tokenizer = AutoTokenizer.from_pretrained(VLLMParams.model_name, padding_side='left')
-        self.model = LLM(
-                            model=VLLMParams.model_name,
+        engine_args = AsyncEngineArgs(model=VLLMParams.model_name,
                             dtype=torch.bfloat16,
                             gpu_memory_utilization=VLLMParams.MAX_GPU_MEM,
                             max_model_len=VLLMParams.MAX_MODEL_SEQ_LEN,
                             task='generate',
                             device=self.device,
-                            enable_prefix_caching=True,
-                        )
+                            enable_prefix_caching=True,)
+        self.model = AsyncLLMEngine.from_engine_args(engine_args)
 
 
-    def generate_text(self, query: str) -> Tuple[str, List[float]]:
+    async def generate_text(self, query: str, context: RequestContext) -> Tuple[str, List[float]]:
         """
         Generates a response to the context
         """
         context_str = InferenceParameters.system_prompt.format(user_query=query)
 
         generated_texts = []
+        output = None
 
         with torch.inference_mode():
             start = time.time()
-            outputs = self.model.generate(
-                                [context_str],
-                                [self.sampling_params],
-                                use_tqdm=False
+            results_generator = self.model.generate(
+                                context_str,
+                                self.sampling_params,
+                                request_id=context.request_id,
                                 )
+
+            try:
+                async for request_output in results_generator:
+                    output = request_output
+            except asyncio.CancelledError:
+                raise EmptyResponseException("Empty response")
+            
             self.logger.debug(f"Generation: {time.time() - start:.3f} seconds; T = {self.sampling_params.temperature:.2f}")
 
-        generated_texts = [filter_non_printable_symbols(o.text) for o in outputs[0].outputs]
+        generated_texts = [filter_non_printable_symbols(o.text) for o in output.outputs]
         generated_texts = [generated_text for generated_text in generated_texts if generated_text.strip() != ""]
 
         return generated_texts
